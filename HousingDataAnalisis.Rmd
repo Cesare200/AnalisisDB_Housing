@@ -1,0 +1,77 @@
+---
+title: "Análisis de Viviendas"
+author: "Julio César"
+date: "2024-05-14"
+output:
+  html_document:
+    theme: spacelab
+---
+
+# MODELO PREDICTIVO - VALOR MEDIANO DE VIVIENDA
+![](C:\Users\MSI\Desktop\BD\TareaR\housing.jpg)
+
+## PASO 1: IMPORTAR EL ARCHIVO HOUSING
+
+```{r importar_datos}
+library(readr)
+housing <- read_csv("housing.csv")
+View(housing)
+```
+
+## ENTENDER LA BASE DE DATOS
+
+```{r entender_datos}
+str(housing)
+summary(housing)
+plot(housing$median_income, housing$median_house_value, 
+     main = "Influencia del Ingreso Medio sobre el Valor de las Viviendas", 
+     xlab = "Ingreso Medio", ylab = "Valor Mediano de la Vivienda")
+```
+
+## GENERAR LA REGRESIÓN LINEAL
+
+```{r regresion_lineal}
+regresion_ajustada <- lm(median_house_value ~ longitude + latitude + housing_median_age + total_rooms + total_bedrooms + population + households + median_income, 
+                         data = housing)
+summary(regresion_ajustada)
+```
+
+## CONSTRUIR UN MODELO DE PREDICCIÓN
+
+```{r modelo_prediccion}
+datos_nuevos <- data.frame(longitude = -122, latitude = 38, housing_median_age = 40, total_rooms = 2000, 
+                           total_bedrooms = 400, population = 1000, households = 350, median_income = 6.0)
+View(datos_nuevos)
+predict(regresion_ajustada, datos_nuevos)
+```
+
+## Gráfico de Regresión Lineal
+
+```{r grafico_regresion}
+library(ggplot2)
+
+# Crear un dataframe con los datos de ingreso medio y valor mediano de la vivienda
+df <- data.frame(median_income = housing$median_income,
+                 median_house_value = housing$median_house_value)
+
+# Graficar la relación entre ingreso medio y valor mediano de la vivienda con una regresión lineal
+ggplot(df, aes(x = median_income, y = median_house_value)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Regresión lineal entre Ingreso Medio y Valor Mediano de la Vivienda",
+       x = "Ingreso Medio",
+       y = "Valor Mediano de la Vivienda")
+```
+
+## Gráfico de Dispersión
+
+```{r grafico_disperion}
+# Graficar la relación entre ingreso medio y valor mediano de la vivienda con un gráfico de dispersión
+ggplot(df, aes(x = median_income, y = median_house_value)) +
+  geom_point(color = "blue", alpha = 0.5) +  # Puntos azules con transparencia
+  labs(title = "Relación entre Ingreso Medio y Valor Mediano de la Vivienda",
+       x = "Ingreso Medio",
+       y = "Valor Mediano de la Vivienda")
+```
+```
+
